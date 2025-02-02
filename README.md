@@ -1,5 +1,7 @@
 # SQLite for Umka
 
+Database engine bindings for the [Umka](https://github.com/vtereshkov/umka-lang) programming language
+
 ## Quick reference card
 
 ```
