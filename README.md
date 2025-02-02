@@ -1,2 +1,2 @@
-# sqlite-umka
-SQLite bindings for Umka
+# SQLite bindings for Umka
+
