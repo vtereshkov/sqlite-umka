@@ -1,6 +1,31 @@
 # SQLite for Umka
 
-Usage example:
+## Quick reference card
+
+```
+// Database connection
+type Database* = struct {/* Implementation-defined */}
+
+fn open*(name: str): (^Database, std::Err)
+fn (db: ^Database) prepare*(request: str): (^Row, std::Err)
+
+
+// Row iterator
+type Row* = struct {/* Implementation-defined */}
+
+fn (row: ^Row) step*(): (bool, std::Err)
+fn (row: ^Row) count*(): int
+fn (row: ^Row) name*(col: int): str
+fn (row: ^Row) names*(): []str
+fn (row: ^Row) value*(col: int): any
+fn (row: ^Row) values*(): []any
+
+
+// Error codes
+type Result* = enum {/* ... */}
+```
+
+## Usage example
 
 ```
 import (
@@ -50,5 +75,3 @@ fn main() {
     }   
 }
 ```
-
-
