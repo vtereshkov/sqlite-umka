@@ -1,0 +1,134 @@
+import "std.um"
+
+type (
+    Database* = struct {_: ^struct{}}
+
+    Row* = struct {_: ^struct{}}
+
+    Result* = enum {
+        OK
+        ERROR
+        INTERNAL
+        PERM
+        ABORT
+        BUSY
+        LOCKED
+        NOMEM
+        READONLY
+        INTERRUPT
+        IOERR
+        CORRUPT
+        NOTFOUND
+        FULL
+        CANTOPEN
+        PROTOCOL
+        EMPTY
+        SCHEMA
+        TOOBIG
+        CONSTRAINT
+        MISMATCH
+        MISUSE
+        NOLFS
+        AUTH
+        FORMAT
+        RANGE
+        NOTADB
+        NOTICE
+        WARNING 
+    }
+)
+
+fn umSqliteErrStr(ec: int): str
+
+fn sqlError(ec: int): std::Err {
+    return std::error(ec, umSqliteErrStr(ec), "sqlite")
+}
+
+fn umSqliteOpen(name: str, db: ^^Database): int
+
+fn open*(name: str): (^Database, std::Err) {
+    var db: ^Database
+    ec := umSqliteOpen(name, &db)
+    return db, sqlError(ec)
+}
+
+fn umSqlitePrepare(db: ^Database, request: str, row: ^^Row): int
+
+fn (db: ^Database) prepare*(request: str): (^Row, std::Err) {
+    var row: ^Row
+    ec := umSqlitePrepare(db, request, &row)
+    return row, sqlError(ec)
+}
+
+type StepResult = enum {
+    ROW  = 100
+    DONE = 101
+}
+
+fn umSqliteStep(row: ^Row): int
+
+fn (row: ^Row) step*(): (bool, std::Err) {
+    ec := umSqliteStep(row)       
+    got := StepResult(ec) == .ROW 
+    if StepResult(ec) == .ROW || StepResult(ec) == .DONE {
+        ec = int(Result.OK)
+    }  
+    return got, sqlError(ec)
+}
+
+fn umSqliteColumnCount(row: ^Row): int
+
+fn (row: ^Row) count*(): int {
+    return umSqliteColumnCount(row)
+}
+
+fn umSqliteColumnName(row: ^Row, col: int): str
+
+fn (row: ^Row) name*(col: int): str {
+    return umSqliteColumnName(row, col)
+}
+
+fn (row: ^Row) names*(): []str {
+    cols := row.count()
+    res := make([]str, cols)
+    for col := 0; col < cols; col++ {
+        res[col] = row.name(col)
+    }
+    return res 
+}
+
+type ColumnType = enum {
+    INTEGER = 1
+    FLOAT
+    TEXT
+    BLOB
+    NULL
+}
+
+fn umSqliteColumnType(row: ^Row, col: int): ColumnType
+
+fn umSqliteColumnInt64(row: ^Row, col: int): int
+fn umSqliteColumnDouble(row: ^Row, col: int): real
+fn umSqliteColumnText(row: ^Row, col: int): str
+fn umSqliteColumnBlob(row: ^Row, col: int, resultType: ^void): []uint8
+
+fn (row: ^Row) value*(col: int): any {
+    switch umSqliteColumnType(row, col) {
+        case .INTEGER: return umSqliteColumnInt64(row, col) 
+        case .FLOAT:   return umSqliteColumnDouble(row, col)
+        case .TEXT:    return umSqliteColumnText(row, col)
+        case .BLOB:    return umSqliteColumnBlob(row, col, typeptr([]uint8))
+        case .NULL:    return null
+    }
+    return null
+}
+
+fn (row: ^Row) values*(): []any {
+    cols := row.count()
+    res := make([]any, cols)
+    for col := 0; col < cols; col++ {
+        res[col] = row.value(col)
+    }
+    return res 
+}
+
