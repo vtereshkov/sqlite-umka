@@ -1,0 +1,23 @@
+{
+    "name": "sqlite",
+    "version": "v0.1",
+    "author": "Vasiliy Tereshkov <vtereshkov@mail.ru>",
+    "license": "BSD-2",
+    "description": "SQLite for Umka",
+    "readme": "README.md",
+    "source": "https://github.com/vtereshkov/sqlite-umka",
+    "homepage": "https://github.com/vtereshkov/sqlite-umka",
+    "dependencies": [
+        "umka"
+    ],
+    "include": [
+        "sqlite.um",
+        "sqlitetest.um",
+        "sqlite_linux.umi",
+        "sqlite_windows.umi",
+        "LICENSE",
+    ],
+    "pre_build": "",
+    "run_posix": "",
+    "run_windows": ""
+}
