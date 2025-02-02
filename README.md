@@ -2,6 +2,8 @@
 
 Database engine bindings for the [Umka](https://github.com/vtereshkov/umka-lang) programming language
 
+[Download](https://github.com/vtereshkov/sqlite-umka/releases)
+
 ## Quick reference card
 
 ```
