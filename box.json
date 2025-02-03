@@ -18,6 +18,5 @@
         "LICENSE"
     ],
     "pre_build": "",
-    "run_posix": "",
-    "run_windows": ""
+    "run": ""
 }

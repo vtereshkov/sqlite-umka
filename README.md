@@ -34,7 +34,7 @@ type Result* = enum {/* ... */}
 ```
 import (
     "std.um"
-    "sqlite.um"
+    "sqlite.um"  // Replace with "umbox/sqlite/sqlite.um" when run from UmBox
 )
 
 fn getStr(): str {
