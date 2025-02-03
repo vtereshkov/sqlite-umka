@@ -8,14 +8,14 @@ Database engine bindings for the [Umka](https://github.com/vtereshkov/umka-lang)
 
 ```
 // Database connection
-type Database* = struct {/* Implementation-defined */}
+type Database* = struct {/* ... */}
 
 fn open*(name: str): (^Database, std::Err)
 fn (db: ^Database) prepare*(request: str): (^Row, std::Err)
 
 
 // Row iterator
-type Row* = struct {/* Implementation-defined */}
+type Row* = struct {/* ... */}
 
 fn (row: ^Row) step*(): (bool, std::Err)
 fn (row: ^Row) count*(): int
