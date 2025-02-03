@@ -15,7 +15,7 @@
         "sqlitetest.um",
         "sqlite_linux.umi",
         "sqlite_windows.umi",
-        "LICENSE",
+        "LICENSE"
     ],
     "pre_build": "",
     "run_posix": "",
