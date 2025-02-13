@@ -29,7 +29,7 @@ UMKA_EXPORT void umSqliteErrStr(UmkaStackSlot *params, UmkaStackSlot *result)
 
 static void umSqliteClose(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Database *db = params[0].ptrVal;
+    Database *db = umkaGetParam(params, 0)->ptrVal;
 
     sqlite3_close(db->handle);
 }
@@ -51,7 +51,7 @@ UMKA_EXPORT void umSqliteOpen(UmkaStackSlot *params, UmkaStackSlot *result)
 
 static void umSqliteFinalize(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = params[0].ptrVal;
+    Row *row = umkaGetParam(params, 0)->ptrVal;
 
     sqlite3_finalize(row->stmt);
 }
