@@ -94,10 +94,10 @@ typedef struct
 
 typedef struct
 {
-    char *fileName;
-    char *fnName;
+    const char *fileName;
+    const char *fnName;
     int line, pos, code;
-    char *msg;
+    const char *msg;
 } UmkaError;
 
 
@@ -113,33 +113,66 @@ typedef struct
 } UmkaExternalCallParamLayout;
 
 
+typedef void *(*UmkaAlloc)            (void);
+typedef bool (*UmkaInit)              (void *umka, const char *fileName, const char *sourceString, int stackSize, void *reserved, int argc, char **argv, bool fileSystemEnabled, bool implLibsEnabled, UmkaWarningCallback warningCallback);
+typedef bool (*UmkaCompile)           (void *umka);
+typedef int  (*UmkaRun)               (void *umka);
+typedef int  (*UmkaCall)              (void *umka, UmkaFuncContext *fn);
+typedef void (*UmkaFree)              (void *umka);
+typedef UmkaError *(*UmkaGetError)    (void *umka);
+typedef bool (*UmkaAlive)             (void *umka);
+typedef char *(*UmkaAsm)              (void *umka);
+typedef bool (*UmkaAddModule)         (void *umka, const char *fileName, const char *sourceString);
+typedef bool (*UmkaAddFunc)           (void *umka, const char *name, UmkaExternFunc func);
+typedef bool (*UmkaGetFunc)           (void *umka, const char *moduleName, const char *fnName, UmkaFuncContext *fn);
+typedef bool (*UmkaGetCallStack)      (void *umka, int depth, int nameSize, int *offset, char *fileName, char *fnName, int *line);
+typedef void (*UmkaSetHook)           (void *umka, UmkaHookEvent event, UmkaHookFunc hook);
+typedef void *(*UmkaAllocData)        (void *umka, int size, UmkaExternFunc onFree);
+typedef void (*UmkaIncRef)            (void *umka, void *ptr);
+typedef void (*UmkaDecRef)            (void *umka, void *ptr);
+typedef void *(*UmkaGetMapItem)       (void *umka, UmkaMap *map, UmkaStackSlot key);
+typedef char *(*UmkaMakeStr)          (void *umka, const char *str);
+typedef int  (*UmkaGetStrLen)         (const char *str);
+typedef void (*UmkaMakeDynArray)      (void *umka, void *array, void *type, int len);
+typedef int  (*UmkaGetDynArrayLen)    (const void *array);
+typedef const char *(*UmkaGetVersion) (void);
+typedef int64_t (*UmkaGetMemUsage)    (void *umka);
+typedef void (*UmkaMakeFuncContext)   (void *umka, void *closureType, int entryOffset, UmkaFuncContext *fn);
+typedef UmkaStackSlot *(*UmkaGetParam)(UmkaStackSlot *params, int index);
+typedef UmkaAny *(*UmkaGetUpvalue)    (UmkaStackSlot *params);
+typedef UmkaStackSlot *(*UmkaGetResult)(UmkaStackSlot *params, UmkaStackSlot *result);
+
+
 typedef struct
 {
-    void *(*umkaAlloc)            (void);
-    bool (*umkaInit)              (void *umka, const char *fileName, const char *sourceString, int stackSize, void *reserved, int argc, char **argv, bool fileSystemEnabled, bool implLibsEnabled, UmkaWarningCallback warningCallback);
-    bool (*umkaCompile)           (void *umka);
-    int  (*umkaRun)               (void *umka);
-    int  (*umkaCall)              (void *umka, UmkaFuncContext *fn);
-    void (*umkaFree)              (void *umka);
-    UmkaError *(*umkaGetError)    (void *umka);
-    bool (*umkaAlive)             (void *umka);
-    char *(*umkaAsm)              (void *umka);
-    bool (*umkaAddModule)         (void *umka, const char *fileName, const char *sourceString);
-    bool (*umkaAddFunc)           (void *umka, const char *name, UmkaExternFunc func);
-    bool (*umkaGetFunc)           (void *umka, const char *moduleName, const char *fnName, UmkaFuncContext *fn);
-    bool (*umkaGetCallStack)      (void *umka, int depth, int nameSize, int *offset, char *fileName, char *fnName, int *line);
-    void (*umkaSetHook)           (void *umka, UmkaHookEvent event, UmkaHookFunc hook);
-    void *(*umkaAllocData)        (void *umka, int size, UmkaExternFunc onFree);
-    void (*umkaIncRef)            (void *umka, void *ptr);
-    void (*umkaDecRef)            (void *umka, void *ptr);
-    void *(*umkaGetMapItem)       (void *umka, UmkaMap *map, UmkaStackSlot key);
-    char *(*umkaMakeStr)          (void *umka, const char *str);
-    int  (*umkaGetStrLen)         (const char *str);
-    void (*umkaMakeDynArray)      (void *umka, void *array, void *type, int len);
-    int  (*umkaGetDynArrayLen)    (const void *array);
-    const char *(*umkaGetVersion) (void);
-    int64_t (*umkaGetMemUsage)    (void *umka);
-    void (*umkaMakeFuncContext)   (void *umka, void *closureType, int entryOffset, UmkaFuncContext *fn);
+    UmkaAlloc           umkaAlloc;
+    UmkaInit            umkaInit;
+    UmkaCompile         umkaCompile;
+    UmkaRun             umkaRun;
+    UmkaCall            umkaCall;
+    UmkaFree            umkaFree;
+    UmkaGetError        umkaGetError;
+    UmkaAlive           umkaAlive;
+    UmkaAsm             umkaAsm;
+    UmkaAddModule       umkaAddModule;
+    UmkaAddFunc         umkaAddFunc;
+    UmkaGetFunc         umkaGetFunc;
+    UmkaGetCallStack    umkaGetCallStack;
+    UmkaSetHook         umkaSetHook;
+    UmkaAllocData       umkaAllocData;
+    UmkaIncRef          umkaIncRef;
+    UmkaDecRef          umkaDecRef;
+    UmkaGetMapItem      umkaGetMapItem;
+    UmkaMakeStr         umkaMakeStr;
+    UmkaGetStrLen       umkaGetStrLen;
+    UmkaMakeDynArray    umkaMakeDynArray;
+    UmkaGetDynArrayLen  umkaGetDynArrayLen;
+    UmkaGetVersion      umkaGetVersion;
+    UmkaGetMemUsage     umkaGetMemUsage;
+    UmkaMakeFuncContext umkaMakeFuncContext;
+    UmkaGetParam        umkaGetParam;
+    UmkaGetUpvalue      umkaGetUpvalue;
+    UmkaGetResult       umkaGetResult;
 } UmkaAPI;
 
 
@@ -168,36 +201,14 @@ UMKA_API int  umkaGetDynArrayLen    (const void *array);
 UMKA_API const char *umkaGetVersion (void);
 UMKA_API int64_t umkaGetMemUsage    (void *umka);
 UMKA_API void umkaMakeFuncContext   (void *umka, void *closureType, int entryOffset, UmkaFuncContext *fn);
+UMKA_API UmkaStackSlot *umkaGetParam(UmkaStackSlot *params, int index);
+UMKA_API UmkaAny *umkaGetUpvalue    (UmkaStackSlot *params);
+UMKA_API UmkaStackSlot *umkaGetResult(UmkaStackSlot *params, UmkaStackSlot *result);
 
 
 static inline UmkaAPI *umkaGetAPI(void *umka)
 {
     return (UmkaAPI *)umka;
-}
-
-
-static inline UmkaStackSlot *umkaGetParam(UmkaStackSlot *params, int index)
-{
-    const UmkaExternalCallParamLayout *paramLayout = (UmkaExternalCallParamLayout *)params[-4].ptrVal;      // For -4, see the stack layout diagram in umka_vm.c
-    if (index < 0 || index >= paramLayout->numParams - paramLayout->numResultParams - 1)
-        return NULL;
-    return params + paramLayout->firstSlotIndex[index + 1];                                                 // + 1 to skip upvalues
-}
-
-
-static inline UmkaAny *umkaGetUpvalue(UmkaStackSlot *params)
-{
-    const UmkaExternalCallParamLayout *paramLayout = (UmkaExternalCallParamLayout *)params[-4].ptrVal;      // For -4, see the stack layout diagram in umka_vm.c
-    return (UmkaAny *)(params + paramLayout->firstSlotIndex[0]);
-}
-
-
-static inline UmkaStackSlot *umkaGetResult(UmkaStackSlot *params, UmkaStackSlot *result)
-{
-    const UmkaExternalCallParamLayout *paramLayout = (UmkaExternalCallParamLayout *)params[-4].ptrVal;      // For -4, see the stack layout diagram in umka_vm.c
-    if (paramLayout->numResultParams == 1)
-        result->ptrVal = params[paramLayout->firstSlotIndex[paramLayout->numParams - 1]].ptrVal;
-    return result;
 }
 
 

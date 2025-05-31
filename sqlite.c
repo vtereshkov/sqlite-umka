@@ -18,18 +18,21 @@ typedef struct
 
 UMKA_EXPORT void umSqliteErrStr(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    const int code = umkaGetParam(params, 0)->intVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka);    
+    UmkaAPI *api = umkaGetAPI(umka);
 
-    umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_errstr(code));
+    const int code = api->umkaGetParam(params, 0)->intVal;
+
+    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_errstr(code));
 }
 
 
 static void umSqliteClose(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Database *db = umkaGetParam(params, 0)->ptrVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);
+
+    Database *db = api->umkaGetParam(params, 0)->ptrVal;
 
     sqlite3_close(db->handle);
 }
@@ -37,21 +40,24 @@ static void umSqliteClose(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqliteOpen(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    const char *name = umkaGetParam(params, 0)->ptrVal;
-    Database **db = umkaGetParam(params, 1)->ptrVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka); 
+    UmkaAPI *api = umkaGetAPI(umka);
+
+    const char *name = api->umkaGetParam(params, 0)->ptrVal;
+    Database **db = api->umkaGetParam(params, 1)->ptrVal;
 
     *db = api->umkaAllocData(umka, sizeof(Database), umSqliteClose);
 
-    umkaGetResult(params, result)->intVal = sqlite3_open(name, &(*db)->handle);
+    api->umkaGetResult(params, result)->intVal = sqlite3_open(name, &(*db)->handle);
 }
 
 
 static void umSqliteFinalize(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);
+
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
 
     sqlite3_finalize(row->stmt);
 }
@@ -59,97 +65,112 @@ static void umSqliteFinalize(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqlitePrepare(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Database *db = umkaGetParam(params, 0)->ptrVal;
-    const char *request = umkaGetParam(params, 1)->ptrVal;
-    Row **row = umkaGetParam(params, 2)->ptrVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka); 
+    UmkaAPI *api = umkaGetAPI(umka);     
+
+    Database *db = api->umkaGetParam(params, 0)->ptrVal;
+    const char *request = api->umkaGetParam(params, 1)->ptrVal;
+    Row **row = api->umkaGetParam(params, 2)->ptrVal;
 
     *row = api->umkaAllocData(umka, sizeof(Row), umSqliteFinalize);    
 
-    umkaGetResult(params, result)->intVal = sqlite3_prepare_v2(db->handle, request, -1, &(*row)->stmt, NULL);
+    api->umkaGetResult(params, result)->intVal = sqlite3_prepare_v2(db->handle, request, -1, &(*row)->stmt, NULL);
 }
 
 
 UMKA_EXPORT void umSqliteStep(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);
 
-    umkaGetResult(params, result)->intVal = sqlite3_step(row->stmt);
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+
+    api->umkaGetResult(params, result)->intVal = sqlite3_step(row->stmt);
 }
 
 
 UMKA_EXPORT void umSqliteColumnCount(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);    
 
-    umkaGetResult(params, result)->intVal = sqlite3_column_count(row->stmt);
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+
+    api->umkaGetResult(params, result)->intVal = sqlite3_column_count(row->stmt);
 }
 
 
 UMKA_EXPORT void umSqliteColumnName(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka);      
+    UmkaAPI *api = umkaGetAPI(umka);     
 
-    umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_column_name(row->stmt, col));
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+
+    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_column_name(row->stmt, col));
 }
 
 
 UMKA_EXPORT void umSqliteColumnType(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);     
 
-    umkaGetResult(params, result)->intVal = sqlite3_column_type(row->stmt, col);
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+
+    api->umkaGetResult(params, result)->intVal = sqlite3_column_type(row->stmt, col);
 }
 
 
 UMKA_EXPORT void umSqliteColumnInt64(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);     
 
-    umkaGetResult(params, result)->intVal = sqlite3_column_int64(row->stmt, col);
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+
+    api->umkaGetResult(params, result)->intVal = sqlite3_column_int64(row->stmt, col);
 }
 
 
 UMKA_EXPORT void umSqliteColumnDouble(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
+    void *umka = umkaGetInstance(result);
+    UmkaAPI *api = umkaGetAPI(umka);
 
-    umkaGetResult(params, result)->realVal = sqlite3_column_double(row->stmt, col);
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+
+    api->umkaGetResult(params, result)->realVal = sqlite3_column_double(row->stmt, col);
 }
 
 
 UMKA_EXPORT void umSqliteColumnText(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka);    
+    UmkaAPI *api = umkaGetAPI(umka);     
 
-    umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_column_text(row->stmt, col));
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+
+    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_column_text(row->stmt, col));
 }
 
 
 UMKA_EXPORT void umSqliteColumnBlob(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    Row *row = umkaGetParam(params, 0)->ptrVal;
-    const int col = umkaGetParam(params, 1)->intVal;
-    void *type = umkaGetParam(params, 2)->ptrVal;
-
     void *umka = umkaGetInstance(result);
-    UmkaAPI *api = umkaGetAPI(umka);
+    UmkaAPI *api = umkaGetAPI(umka);    
+
+    Row *row = api->umkaGetParam(params, 0)->ptrVal;
+    const int col = api->umkaGetParam(params, 1)->intVal;
+    void *type = api->umkaGetParam(params, 2)->ptrVal;
 
     typedef UmkaDynArray(unsigned char) ByteArray;
-    ByteArray *array = umkaGetResult(params, result)->ptrVal;
+    ByteArray *array = api->umkaGetResult(params, result)->ptrVal;
 
     const void *blob = sqlite3_column_blob(row->stmt, col);
     const int size = sqlite3_column_bytes(row->stmt, col);
