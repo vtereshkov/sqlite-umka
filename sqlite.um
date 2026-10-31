@@ -110,14 +110,14 @@ fn umSqliteColumnType(row: ^Row, col: int): ColumnType
 fn umSqliteColumnInt64(row: ^Row, col: int): int
 fn umSqliteColumnDouble(row: ^Row, col: int): real
 fn umSqliteColumnText(row: ^Row, col: int): str
-fn umSqliteColumnBlob(row: ^Row, col: int, resultType: ^void): []uint8
+fn umSqliteColumnBlob(row: ^Row, col: int): []uint8
 
 fn (row: ^Row) value*(col: int): any {
     switch umSqliteColumnType(row, col) {
         case .INTEGER: return umSqliteColumnInt64(row, col) 
         case .FLOAT:   return umSqliteColumnDouble(row, col)
         case .TEXT:    return umSqliteColumnText(row, col)
-        case .BLOB:    return umSqliteColumnBlob(row, col, typeptr([]uint8))
+        case .BLOB:    return umSqliteColumnBlob(row, col)
         case .NULL:    return null
     }
     return null

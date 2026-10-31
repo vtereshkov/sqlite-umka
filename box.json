@@ -1,6 +1,6 @@
 {
     "name": "sqlite",
-    "version": "v0.1",
+    "version": "v0.1.1",
     "author": "Vasiliy Tereshkov <vtereshkov@mail.ru>",
     "license": "BSD-2",
     "description": "SQLite for Umka",

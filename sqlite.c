@@ -18,7 +18,7 @@ typedef struct
 
 UMKA_EXPORT void umSqliteErrStr(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     const int code = api->umkaGetParam(params, 0)->intVal;
@@ -29,7 +29,7 @@ UMKA_EXPORT void umSqliteErrStr(UmkaStackSlot *params, UmkaStackSlot *result)
 
 static void umSqliteClose(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     Database *db = api->umkaGetParam(params, 0)->ptrVal;
@@ -40,7 +40,7 @@ static void umSqliteClose(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqliteOpen(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     const char *name = api->umkaGetParam(params, 0)->ptrVal;
@@ -54,7 +54,7 @@ UMKA_EXPORT void umSqliteOpen(UmkaStackSlot *params, UmkaStackSlot *result)
 
 static void umSqliteFinalize(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -65,7 +65,7 @@ static void umSqliteFinalize(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqlitePrepare(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);     
 
     Database *db = api->umkaGetParam(params, 0)->ptrVal;
@@ -80,7 +80,7 @@ UMKA_EXPORT void umSqlitePrepare(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqliteStep(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -91,7 +91,7 @@ UMKA_EXPORT void umSqliteStep(UmkaStackSlot *params, UmkaStackSlot *result)
 
 UMKA_EXPORT void umSqliteColumnCount(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);    
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -102,7 +102,7 @@ UMKA_EXPORT void umSqliteColumnCount(UmkaStackSlot *params, UmkaStackSlot *resul
 
 UMKA_EXPORT void umSqliteColumnName(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);     
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -114,7 +114,7 @@ UMKA_EXPORT void umSqliteColumnName(UmkaStackSlot *params, UmkaStackSlot *result
 
 UMKA_EXPORT void umSqliteColumnType(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);     
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -126,7 +126,7 @@ UMKA_EXPORT void umSqliteColumnType(UmkaStackSlot *params, UmkaStackSlot *result
 
 UMKA_EXPORT void umSqliteColumnInt64(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);     
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -138,7 +138,7 @@ UMKA_EXPORT void umSqliteColumnInt64(UmkaStackSlot *params, UmkaStackSlot *resul
 
 UMKA_EXPORT void umSqliteColumnDouble(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -150,7 +150,7 @@ UMKA_EXPORT void umSqliteColumnDouble(UmkaStackSlot *params, UmkaStackSlot *resu
 
 UMKA_EXPORT void umSqliteColumnText(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);     
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
@@ -162,12 +162,12 @@ UMKA_EXPORT void umSqliteColumnText(UmkaStackSlot *params, UmkaStackSlot *result
 
 UMKA_EXPORT void umSqliteColumnBlob(UmkaStackSlot *params, UmkaStackSlot *result)
 {
-    void *umka = umkaGetInstance(result);
+    Umka *umka = umkaGetInstance(result);
     UmkaAPI *api = umkaGetAPI(umka);    
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
     const int col = api->umkaGetParam(params, 1)->intVal;
-    void *type = api->umkaGetParam(params, 2)->ptrVal;
+    const UmkaType *type = api->umkaGetParamType(params, 1);
 
     typedef UmkaDynArray(unsigned char) ByteArray;
     ByteArray *array = api->umkaGetResult(params, result)->ptrVal;
