@@ -167,7 +167,7 @@ UMKA_EXPORT void umSqliteColumnBlob(UmkaStackSlot *params, UmkaStackSlot *result
 
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
     const int col = api->umkaGetParam(params, 1)->intVal;
-    const UmkaType *type = api->umkaGetParamType(params, 1);
+    const UmkaType *type = api->umkaGetResultType(params, result);
 
     typedef UmkaDynArray(unsigned char) ByteArray;
     ByteArray *array = api->umkaGetResult(params, result)->ptrVal;
