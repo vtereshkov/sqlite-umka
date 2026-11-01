@@ -156,7 +156,7 @@ UMKA_EXPORT void umSqliteColumnText(UmkaStackSlot *params, UmkaStackSlot *result
     Row *row = api->umkaGetParam(params, 0)->ptrVal;
     const int col = api->umkaGetParam(params, 1)->intVal;
 
-    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_column_text(row->stmt, col));
+    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, (const char *)sqlite3_column_text(row->stmt, col));
 }
 
 
