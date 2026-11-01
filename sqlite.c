@@ -23,7 +23,7 @@ UMKA_EXPORT void umSqliteErrStr(UmkaStackSlot *params, UmkaStackSlot *result)
 
     const int code = api->umkaGetParam(params, 0)->intVal;
 
-    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, sqlite3_errstr(code));
+    api->umkaGetResult(params, result)->ptrVal = api->umkaMakeStr(umka, (const char *)sqlite3_errstr(code));
 }
 
 
