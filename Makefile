@@ -1,7 +1,5 @@
-
 CROSS_CC=x86_64-w64-mingw32-gcc
 NAME=sqlite
-UMKA=umka
 CFLAGS= \
 	-Wall \
 	-Iumbox/umka_api/ \
@@ -23,7 +21,3 @@ all: build
 
 .PHONY: build
 build: $(NAME)_windows.umi $(NAME)_linux.umi
-
-.PHONY: run
-run: build
-	@$(UMKA) $(NAME).um

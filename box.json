@@ -8,7 +8,7 @@
     "source": "https://github.com/vtereshkov/sqlite-umka",
     "homepage": "https://github.com/vtereshkov/sqlite-umka",
     "dependencies": [
-        "umka"
+        "umka_api"
     ],
     "include": [
         "sqlite.um",
@@ -17,6 +17,6 @@
         "sqlite_windows.umi",
         "LICENSE"
     ],
-    "pre_build": "",
+    "pre_build": "make",
     "run": ""
 }
